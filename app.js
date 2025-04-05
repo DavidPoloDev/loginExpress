@@ -1,6 +1,5 @@
 const express = require('express')
 const app = express()
-const cors = require('cors');
 const port = process.env.PORT || 3000
 const session = require('express-session')
 const bcrypt = require('bcryptjs');
@@ -11,30 +10,41 @@ const validate = require('./validate');
 const saltRounds = 10;
 //mysql://root:VNCiZrVdnODdmkarfsivymMPzDcxpqdr@nozomi.proxy.rlwy.net:41401/railway
 
-// Configuración de CORS para permitir peticiones desde el frontend
-app.use(cors({
-origin: process.env.URLFRONTEND || 'http://localhost:3001',  // Origen permitido para las peticiones
-credentials: true // Permite el envío de cookies en peticiones cross-origin
-}))
+// Reemplaza tu configuración CORS actual con esto
+app.use((req, res, next) => {
+  // Quita cualquier barra final del origen
+  const origin = req.headers.origin?.replace(/\/$/, '') || '';
+  
+  res.header('Access-Control-Allow-Origin', origin);
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+  
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
 
 // Configuración de sesiones
 app.use(session({
-secret: process.env.SECRETSESSION ||'habhcbvhbhdvb',
-proxy: process.env.NODE_ENV === 'production',
-resave: false,
-saveUninitialized: false, // Clave secreta para firmar la cookie de sesión
-cookie: {secure: process.env.NODE_ENV === 'production',
-  sameSite: 'none',
-  maxAge: 24 * 60 * 60 * 1000 // 24 horas
-}
-}))
+  secret: process.env.SECRETSESSION ||'habhcbvhbhdvb',
+  proxy: process.env.NODE_ENV === 'production',
+  resave: false,
+  saveUninitialized: false, // Clave secreta para firmar la cookie de sesión
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    maxAge: 24 * 60 * 60 * 1000 // 24 horas
+  }
+}));
 
 app.get('/', (req, res) => {
   res.send('API funcionando correctamente');
 });
 
 // Ruta para la autenticación de usuarios
-app.get('/login',login);
+app.get('/login', login);
 
 // Ruta para validar si hay una sesión activa
 app.get('/validate', validate);
@@ -50,22 +60,22 @@ app.delete('/usuarios', deleteUsuarios);
 
 // Ruta para cerrar sesión
 app.get('/logout', (req, res) => {
-// Destruir la sesión
-req.session.destroy(err => {
-  if (err) {
-    console.error("Error al cerrar sesión:", err);
-    return res.status(500).send("Error al cerrar sesión");
-  }
-  
-  // Respuesta exitosa
-  res.status(200).send({
-    success: true,
-    message: "Sesión finalizada correctamente"
+  // Destruir la sesión
+  req.session.destroy(err => {
+    if (err) {
+      console.error("Error al cerrar sesión:", err);
+      return res.status(500).send("Error al cerrar sesión");
+    }
+    
+    // Respuesta exitosa
+    res.status(200).send({
+      success: true,
+      message: "Sesión finalizada correctamente"
+    });
   });
-});
 });
 
 // Inicia el servidor en el puerto especificado
 app.listen(port, () => {
-console.log(`Example app listening on port ${port}`);
+  console.log(`Example app listening on port ${port}`);
 });
