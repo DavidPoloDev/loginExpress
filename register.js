@@ -1,5 +1,5 @@
 const connection = require("./connection");
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const saltRounds = 10;
 
 const register = async (req, res) => {
