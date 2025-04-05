@@ -1,5 +1,6 @@
 const connection = require('./connection');
 const bcrypt = require('bcryptjs');
+const md5 = require('md5'); 
 const saltRounds = 10;
 
 const login = async (req, res) => {
@@ -33,7 +34,7 @@ if (results.length > 0) {
     // Contraseña con método anterior (por compatibilidad)
     // Nota: Esto es para mantener compatibilidad con contraseñas antiguas
     // En un sistema real, deberías migrar todas las contraseñas a bcrypt
-    const oldHash = require('md5')(datos.contraseña);
+    const oldHash = md5(datos.contraseña);
     if (oldHash === results[0].contraseña) {
         req.session.correo_electronico = datos.correo_electronico;
         return res.status(200).send({
