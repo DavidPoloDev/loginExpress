@@ -29,15 +29,6 @@ cookie: {secure: process.env.NODE_ENV === 'production',
 }
 }))
 
-app.get('/', (req, res) => {
-  res.send('API funcionando correctamente');
-});
-
-app.use(express.static(path.join(__dirname, 'frontend/build')));
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend/build', 'index.html'));
-});
-
 // Ruta para la autenticación de usuarios
 app.get('/login',login)
 
