@@ -3,7 +3,9 @@
     "version": "1.0.0",
     "main": "app.js",
     "scripts": {
-      "start": "npm run dev"
+      "start": "node app.js",
+      "dev": "nodemon app.js"
+
     },
     "dependencies": {
       "express": "^4.18.2"
