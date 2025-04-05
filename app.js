@@ -29,6 +29,10 @@ cookie: {secure: process.env.NODE_ENV === 'production',
 }
 }))
 
+app.get('/', (req, res) => {
+  res.send('API funcionando correctamente');
+});
+
 // Ruta para la autenticación de usuarios
 app.get('/login',login)
 
