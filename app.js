@@ -39,6 +39,16 @@ app.use(session({
   }
 }));
 
+app.get('/encrypt-test', (req, res) => {
+  const password = req.query.password || '123';
+  const hash = bcrypt.hashSync(password, 10);
+  
+  res.send({
+    original: password,
+    encrypted: hash
+  });
+});
+
 app.get('/', (req, res) => {
   res.send('API funcionando correctamente');
 });
