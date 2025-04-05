@@ -11,20 +11,11 @@ const saltRounds = 10;
 //mysql://root:VNCiZrVdnODdmkarfsivymMPzDcxpqdr@nozomi.proxy.rlwy.net:41401/railway
 
 // Reemplaza tu configuración CORS actual con esto
-app.use((req, res, next) => {
-  // Quita cualquier barra final del origen
-  const origin = req.headers.origin?.replace(/\/$/, '') || '';
-  
-  res.header('Access-Control-Allow-Origin', origin);
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
-  
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
-  }
-  next();
-});
+// Configuración de CORS para permitir peticiones desde el frontend
+app.use(cors({
+  origin: process.env.URLFRONTEND || 'http://localhost:3001',  // Origen permitido para las peticiones
+  credentials: true // Permite el envío de cookies en peticiones cross-origin
+  }))
 
 // Configuración de sesiones
 app.use(session({
@@ -39,15 +30,6 @@ app.use(session({
   }
 }));
 
-app.get('/encrypt-test', (req, res) => {
-  const password = req.query.password || '123';
-  const hash = bcrypt.hashSync(password, 10);
-  
-  res.send({
-    original: password,
-    encrypted: hash
-  });
-});
 
 app.get('/', (req, res) => {
   res.send('API funcionando correctamente');
