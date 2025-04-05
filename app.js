@@ -9,7 +9,7 @@ const register = require('./register');
 const { TogetUsuarios, deleteUsuarios } = require('./usuarios');
 const validate = require('./validate');
 const saltRounds = 10;
-mysql://root:VNCiZrVdnODdmkarfsivymMPzDcxpqdr@nozomi.proxy.rlwy.net:41401/railway
+//mysql://root:VNCiZrVdnODdmkarfsivymMPzDcxpqdr@nozomi.proxy.rlwy.net:41401/railway
 
 // Configuración de CORS para permitir peticiones desde el frontend
 app.use(cors({
@@ -34,16 +34,16 @@ app.get('/', (req, res) => {
 });
 
 // Ruta para la autenticación de usuarios
-app.get('/login',login)
+app.get('/login',login);
 
 // Ruta para validar si hay una sesión activa
-app.get('/validate', validate)
+app.get('/validate', validate);
 
 // Ruta para registrar Usuarios
-app.get('/register', register)
+app.get('/register', register);
 
 // Ruta para obtener usuarios
-app.get('/usuarios', TogetUsuarios)
+app.get('/usuarios', TogetUsuarios);
 
 // Ruta para eliminar usuarios
 app.delete('/usuarios', deleteUsuarios);
