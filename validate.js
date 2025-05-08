@@ -1,7 +1,8 @@
 const validate = (req, res) => {
 console.log("Sesión actual:", req.session);
-if (req.session.correo_electronico) {
-    // Si existe correo_electronico en la sesión, el usuario está autenticado
+if (req.session && req.session.correo_electronico) {
+
+    //Verificacion mas robusta:
     res.status(200).send({
     success: true,
     message: 'Sesion validada',
@@ -10,10 +11,10 @@ if (req.session.correo_electronico) {
     },
     session: {
         active: true,
-        created: req.session.cookie.originalMaxAge 
+        created: req.session && req.session.cookie.originalMaxAge 
         ? new Date(Date.now() - (req.session.cookie.maxAge - req.session.cookie.originalMaxAge))
         : new Date(),
-        expires: req.session.cookie.expires || new Date(Date.now() + req.session.cookie.maxAge)
+        expires: req.session && (req.session.cookie.expires || new Date(Date.now() + req.session.cookie.maxAge))
     }
     });
 } else {
@@ -26,3 +27,4 @@ if (req.session.correo_electronico) {
 }
 
 module.exports = validate
+
